@@ -1,5 +1,7 @@
 find_package(Eigen3 REQUIRED NO_MODULE)
 
+set(FETCHCONTENT_QUIET OFF CACHE BOOL "Disable quiet mode for FetchContent")
+
 CPMAddPackage("gh:kavrakilab/nigh#97130999440647c204e0265d05a997dbd8da4e70")
 add_library(nigh INTERFACE)
 target_include_directories(nigh INTERFACE $<BUILD_INTERFACE:${nigh_SOURCE_DIR}/src>)
@@ -32,7 +34,23 @@ endif()
 
 # SIMDxorshift for x86_64 systems (includes macOS Intel and Linux x86_64)
 if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "AMD64")
-  CPMAddPackage("gh:lemire/SIMDxorshift#857c1a01df53cf1ee1ae8db3238f0ef42ef8e490")
+	CPMAddPackage("gh:lemire/SIMDxorshift#857c1a01df53cf1ee1ae8db3238f0ef42ef8e490")
+  message(STATUS "SIMDxorshift_SOURCE_DIR = ${SIMDxorshift_SOURCE_DIR}")
+  execute_process(
+  COMMAND ls -Rl ${CMAKE_BINARY_DIR}
+  RESULT_VARIABLE ls_result
+  OUTPUT_VARIABLE ls_output
+  ERROR_VARIABLE ls_errors
+  )
+  message(STATUS "Build tree listing:\n${ls_output}")
+
+  execute_process(
+  COMMAND ls -Rl ${CMAKE_SOURCE_DIR}
+  RESULT_VARIABLE ls_result
+  OUTPUT_VARIABLE ls_output
+  ERROR_VARIABLE ls_errors
+  )
+  message(STATUS "source tree listing:\n${ls_output}")
   
   if(SIMDxorshift_SOURCE_DIR)
     add_library(simdxorshift STATIC
